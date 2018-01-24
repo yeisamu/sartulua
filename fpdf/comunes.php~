@@ -1,0 +1,186 @@
+<?php
+
+    /*  
+  
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	
+	Autores: Pedro Obregón Mejías
+			 Rubén D. Mancera Morán
+	Versión: 1.0
+	Fecha Liberación del código: 13/07/2004
+	Galopín para gnuLinEx 2004 -- Extremadura		 
+	
+	*/
+class PDF extends FPDF
+{
+//Cabecera de página
+function Header()
+{
+
+    //Logo
+   $this->Image('./logo/logo.jpg',15,8,70);
+    $this->Ln(4);	
+	
+	include ("../conexion.php"); 
+   $consulta = "Select * from empresa";
+   $resultado = mysql_query($consulta, $conexion);
+   $lafila=mysql_fetch_array($resultado); 
+
+   $filas=mysql_num_rows($resultado);
+   if ($filas<>0)
+     {   
+
+    //Posición: a 1,5 cm del final
+  //$this->SetY(21);
+    //Arial italic 8
+   // $this->SetFont('Arial','',7);
+	$this->SetFont('Arial','B',12);
+   $this->Cell(1);
+
+    //Número de página
+	$numero=$lafila["codprovincia"];
+	$consulta2="select * from provincias where codprovincia=$numero";
+	$resultado2=mysql_query($consulta2,$conexion);
+	$lafila2=mysql_fetch_array($resultado2);
+	$provincia=$lafila2["denprovincia"];
+	
+   // $this->Cell(0,10,$lafila["nombre"],0,0,'C');
+	 //   $this->Ln(2);	
+	$this->SetFont('Arial','',7);
+	$this->Cell(5);
+	$this->Cell(250,4,"NIT.:  " . $lafila["cif"] ,0,0,'C');	
+       $this->Ln(2);
+    $this->Cell(260,10,$lafila["direccion"] . "  Tlfno: " . $lafila["telefono"],0,0,'C');
+    $this->Ln(2);
+	 
+	 //$this->Cell(-100,15,$lafila["direccion"] . " -- " . $lafila["localidad"] . " -- " . $lafila["cp"] . " -- " . $provincia,0,0,'C');	
+	//Posición: a 1,5 cm del final
+   // $this->SetY(-18);
+    //Arial italic 8
+    //$this->SetFont('Arial','',7);
+    //Número de página
+    
+	//$this->SetY(-15);
+    $this->Cell(265,15,$lafila["localidad"] . " -- " . $provincia,0,0,'C');		
+
+    //Posición: a 1,5 cm del final
+   // $this->SetY(-10);
+    //Arial italic 8
+    //$this->SetFont('Arial','',8);
+    //Número de página
+   // $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
+       $this->Ln(15);
+	}
+	/*else
+	{
+    //Posición: a 1,5 cm del final
+    $this->SetY(-21);
+    //Arial italic 8
+    $this->SetFont('Arial','',7);
+    //Número de página
+    $this->Cell(0,10,'http://galopin.sinuh.org -- E-Mail: galopin@sinuh.org',0,0,'C');	
+	
+	//Posición: a 1,5 cm del final
+    $this->SetY(-18);
+    //Arial italic 8
+    $this->SetFont('Arial','',7);
+    //Número de página
+    $this->Cell(0,10,'Proyecto Galopín Extremadura',0,0,'C');	
+	
+
+    //Posición: a 1,5 cm del final
+    $this->SetY(-10);
+    //Arial italic 8
+    $this->SetFont('Arial','',8);
+    //Número de página
+    $this->Cell(0,10,'-- '.$this->PageNo().' --',0,0,'C');	
+	}*/
+	
+}
+
+//Pie de página
+function Footer()
+{
+
+   include ("../conexion.php"); 
+   $consulta = "Select * from empresa";
+   $resultado = mysql_query($consulta, $conexion);
+   $lafila=mysql_fetch_array($resultado); 
+
+   $filas=mysql_num_rows($resultado);
+   if ($filas<>0)
+     {   
+
+    //Posición: a 1,5 cm del final
+    $this->SetY(-21);
+    //Arial italic 8
+    $this->SetFont('Arial','',7);
+    //Número de página
+	$numero=$lafila["codprovincia"];
+	$consulta2="select * from provincias where codprovincia=$numero";
+	$resultado2=mysql_query($consulta2,$conexion);
+	$lafila2=mysql_fetch_array($resultado2);
+	$provincia=$lafila2["denprovincia"];
+	
+    $this->Cell(0,10,$lafila["nombre"] . " -- " .  $lafila["direccion"] . " -- " . $lafila["localidad"] . " -- "  . $provincia,0,0,'C');	
+	
+	//Posición: a 1,5 cm del final
+    $this->SetY(-18);
+    //Arial italic 8
+    $this->SetFont('Arial','',7);
+    //Número de página
+    $this->Cell(0,10,"NIT.:  " . $lafila["cif"] . "  Tlfno: " . $lafila["telefono"]. "  FAX: " . $lafila["fax"]. "  Célular: " . $lafila["movil"],0,0,'C');	
+
+	$this->SetY(-15);
+    $this->Cell(0,10,"Web.:  " . $lafila["web"] . "  E-mail: " . $lafila["email"],0,0,'C');		
+
+    //Posición: a 1,5 cm del final
+    $this->SetY(-10);
+    //Arial italic 8
+    $this->SetFont('Arial','',8);
+    //Número de página
+   // $this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
+	}
+	else
+	{
+    //Posición: a 1,5 cm del final
+    $this->SetY(-21);
+    //Arial italic 8
+    $this->SetFont('Arial','',7);
+    //Número de página
+    $this->Cell(0,10,'http://.sinuh.org -- E-Mail: @sinuh.org',0,0,'C');	
+	
+	//Posición: a 1,5 cm del final
+    $this->SetY(-18);
+    //Arial italic 8
+    $this->SetFont('Arial','',7);
+    //Número de página
+    $this->Cell(0,10,'Proyecto ',0,0,'C');	
+	
+
+    //Posición: a 1,5 cm del final
+    $this->SetY(-10);
+    //Arial italic 8
+    $this->SetFont('Arial','',8);
+    //Número de página
+    $this->Cell(0,10,'-- '.$this->PageNo().' --',0,0,'C');	
+	}
+}
+
+
+}
+
+
+?>

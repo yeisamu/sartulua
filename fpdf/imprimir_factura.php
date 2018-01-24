@@ -1,0 +1,303 @@
+<?php
+    /*  
+  
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	
+	*/
+
+define('FPDF_FONTPATH','font/');
+require('mysql_table.php');
+include("comunes.php");
+include ("../conexion.php"); 
+include ("../convertirfechas2.php"); 
+
+
+
+
+$pdf=new PDF('P','mm','mcarta');
+$pdf->Open();
+$pdf->AddPage();
+
+include ("../conexion.php");
+
+$pdf->Ln(10);
+ 
+//$consulta01 = "Select * from factura_cliente WHERE fecha BETWEEN  '06/01/2011' 	and '21/04/2011'";
+//$resultado01 = mysql_query($consulta01, $conexion);
+//$numregistros=mysql_num_rows($resultado01);
+
+ $i=0;
+ $acumTotal = 0;
+ $ventotal= 0;
+//while ($i < $numregistros)
+	 //{
+          // ciclo para presentar los movimientos 
+	 // $codfactura=mysql_result($resultado01,$i,num_factura); 
+        //$consulta2="select * from factura where numfac='$numero_new'";
+ 
+$consulta = "Select * from factura_cliente,clientes where factura_cliente.num_factura='$codfactura' and factura_cliente.identificacion=clientes.id";
+$resultado = mysql_query($consulta, $conexion);
+$lafila=mysql_fetch_array($resultado);
+	
+	/*$pdf->Cell(95);
+    $pdf->Cell(30,4,"",'',0,'C');
+	//$pdf->Cell(10,4,"FV",0,0,'C',1);
+    $pdf->Ln(2);*/
+	
+	$pdf->SetFillColor(255,255,255);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+   $pdf->Cell(40,65,"");
+	 $pdf->SetFont('Arial','',9);
+	$pdf->SetX(10);	
+
+
+	$fecha = reconversion($lafila["fecha"]);
+	
+    $pdf->Cell(1);
+    $pdf->Cell(80,4,"CLIENTE:                  ".$lafila["primer_nombre"]." ".$lafila["segundo_nombre"]." ".$lafila["primer_apellido"],0,0,'L',1);
+	 $pdf->Cell(30,4,"",'',0,'C');
+	 $pdf->SetFont('Arial','B',10);
+	 $pdf->Cell(30,4,"Fecha",0,0,'C',1);
+	 $pdf->Cell(10,4,"",'',0,'C');
+	 $pdf->Cell(20,4,"Nº Fact.",0,0,'C',1);
+    $pdf->Ln(4);
+	
+    $pdf->Cell(1);
+	$pdf->SetFont('Arial','',9);
+    $pdf->Cell(80,4,"IDENTIFICACIÓN:    ".$lafila["id"],0,0,'L',1);
+	$pdf->Cell(30,4,"",'',0,'C');
+	 $pdf->SetFont('Arial','B',10);
+	// $pdf->Cell(30,4,"Nº Fact.",0,0,'C',1);
+	$pdf->Cell(30,4,$lafila["fecha"],0,0,'C',1);	
+	$pdf->Cell(10,4,"",'',0,'C');
+	$pdf->Cell(20,4,"FV   ".$lafila["num_factura"],0,0,'C',1);		
+    $pdf->Ln(4);
+
+    $pdf->Cell(1);
+	$pdf->SetFont('Arial','',9);
+    $pdf->Cell(80,4,"CÓDIGO CLIENTE:  ".$lafila["num_reg"],0,0,'L',1);
+    $pdf->Ln(4);
+	
+	//Calculamos la provincia
+	/*$codigoprovincia=$lafila["codprovincia"];
+	$consulta="select * from provincias where codprovincia=$codigoprovincia";
+	$query=mysql_query($consulta);
+	$row=mysql_fetch_array($query);*/
+	
+	$codcity=$lafila["ciudad"];
+	$consultas="select * from ciudad where codciudad='$codcity'";
+	$querys=mysql_query($consultas,$conexion);
+	$rows=mysql_fetch_array($querys);
+	
+	$codpro=$rows["codprovincia"];
+	$pro="select * from provincias where codprovincia='$codpro'";
+	$que=mysql_query($pro,$conexion);
+	$provi=mysql_fetch_array($que);
+
+	$pdf->Cell(1);
+    $pdf->Cell(80,4,"DIRECCIÓN:             ".$lafila["direccion"],0,0,'L',1);
+    $pdf->Ln(4);		
+	
+   /* $pdf->Cell(1);
+    $pdf->Cell(80,4,"BARRIO:                   " . $lafila["cp"],0,0,'L',1);
+    $pdf->Ln(4);*/
+	
+    $pdf->Cell(1);
+    $pdf->Cell(80,4,"CIUDAD:                   " .  $rows["desciudad"]  . "  (" . $provi["denprovincia"] . ")",0,0,'L',1);
+    $pdf->Ln(10);					
+	
+	/*$pdf->SetFillColor(200,200,200);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+    $pdf->Cell(83);
+    $pdf->Cell(30,4,"NIF",1,0,'C',1);
+	$pdf->Cell(30,4,"Cod. Clien",1,0,'C',1);
+	$pdf->Cell(30,4,"Fecha",1,0,'C',1);	
+	$pdf->Cell(20,4,"Nº Fact.",1,0,'C',1);
+	$pdf->Ln(4);
+	
+	$pdf->Cell(83);
+	$pdf->SetFillColor(255,255,255);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+	$fecha = reconversion($lafila["fecha"]);
+	
+    $pdf->Cell(30,4,$lafila["nif"],1,0,'C',1);
+	$pdf->Cell(30,4,$lafila["codcliente"],1,0,'C',1);
+	$pdf->Cell(30,4,$fecha,1,0,'C',1);	
+	$pdf->Cell(20,4,$lafila["codfactura"],1,0,'C',1);	*/	
+	
+	
+	//ahora mostramos las líneas de la factura
+	$pdf->Ln(4);		
+	$pdf->Cell(1);
+	
+	$pdf->SetFillColor(200,200,200);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+    $pdf->Cell(15,4,"Codigo",1,0,'C',1);
+	$pdf->Cell(150,4,"Descripción",1,0,'C',1);
+	//$pdf->Cell(20,4,"Cantidad",1,0,'C',1);	
+	$pdf->Cell(15,4,"Valor",1,0,'C',1);
+	//$pdf->Cell(15,4,"% Desc.",1,0,'C',1);
+	//$pdf->Cell(20,4,"Importe",1,0,'C',1);
+	$pdf->Ln(4);
+			
+			
+	$pdf->SetFillColor(224,235,255);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','',9);
+
+
+  
+ 
+     $con="select * from factura_cliente where num_factura ='$codfactura' ";
+	 $res=mysql_query($con, $conexion);
+    $consulta2 = "Select * from factulineatmp where codfactura='$codfactura' order by numlinea";
+    $resultado2 = mysql_query($consulta2, $conexion);
+
+    $importe=0;
+    $contador=1;
+    while ($lafila2=mysql_fetch_array($resultado2)) 
+	
+	   { 
+	   include("controlimpresionfact.php");
+	   
+	   $pdf->Cell(1);
+         $familia=$lafila2["codigo"]; 
+         //$subfamilia=$lafila2["codigo"];
+         $codigoarticulo=$lafila2["codfamilia"];
+         $consulta3 = "Select * from entidades where codigo='$familia' ";
+         $resultado3 = mysql_query($consulta3, $conexion);
+         $lafila3=mysql_fetch_array($resultado3);
+         
+		  $pdf->Cell(15,4,$lafila2["codigo"],'LR',0,'C');
+		 
+		  $acotado = substr($lafila3["nombre_corto"], 0, 55);
+				       $pdf->Cell(150,4,$lafila3["descripcion"],'LR',0,'L');
+					   
+					   //$cantidad=number_format($lafila2["precio"],0,",",".");
+					   //$pdf->Cell(20,4,$cantidad,'LR',0,'R');	
+					   
+					   $precio2= number_format($lafila2["precio"],0,",",".");
+					   $pdf->Cell(15,4,$precio2,'LR',0,'R');
+					           if ($lafila2["dcto"]==0) 
+			              { 
+				           // $pdf->Cell(15,4,"",'LR',0,'C');
+	                      } 
+		               else 
+			              { 
+				           // $pdf->Cell(15,4,$lafila2["dcto"] . " %",'LR',0,'C');  
+                          } 	
+                      // $importe2= number_format($lafila["total"],0,",",".");						  
+					 //  $pdf->Cell(20,4,$importe2,'LR',0,'R'); 
+					   $contador++;
+					   $importe=$importe + $lafila["total"];
+					    	
+		 $pdf->Ln(4);
+              
+	              }
+				 
+
+  // include("observacionesfact.php");
+
+	while ($contador<8)
+	{
+	  $pdf->Cell(1);
+      $pdf->Cell(15,4,"",'LR',0,'C');
+      $pdf->Cell(150,4,"",'LR',0,'C');
+	 // $pdf->Cell(20,4,"",'LR',0,'C');	
+	  //$pdf->Cell(15,4,"",'LR',0,'C');
+	  //$pdf->Cell(15,4,"",'LR',0,'C');
+	  $pdf->Cell(15,4,"",'LR',0,'C');
+	$pdf->Ln(4);	
+	  $contador=$contador +1;
+	}	
+
+	 $pdf->Cell(1);
+      $pdf->Cell(15,4,"",'LRB',0,'C');
+      $pdf->Cell(150,4,"",'LRB',0,'C');
+	  //$pdf->Cell(20,4,"",'LRB',0,'C');	
+	  //$pdf->Cell(15,4,"",'LRB ',0,'C');
+	  //$pdf->Cell(15,4,"",'LRB',0,'C');
+	  $pdf->Cell(15,4,"",'LRB',0,'C');
+	  $pdf->Ln(4);		
+
+	//ahora mostramos el final de la factura
+	$pdf->Ln(10);		
+	$pdf->Cell(147);
+	
+	$pdf->SetFillColor(200,200,200);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+   /* $pdf->Cell(30,4,"NETO",1,0,'C',1);
+	$pdf->Cell(30,4,"FLETE",1,0,'C',1);
+	$pdf->Cell(30,4,"IVA",1,0,'C',1);*/	
+	$pdf->Cell(35,4,"TOTAL",1,0,'C',1);
+	$pdf->Ln(4);
+	
+    $pdf->SetFillColor(255,255,255);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0,0,0);
+    $pdf->SetLineWidth(.2);
+    $pdf->SetFont('Arial','B',10);
+	
+	$pdf->Cell(147);
+	/*$importe5= number_format($importe,0,",",".");	
+    $pdf->Cell(30,4,$importe5,1,0,'R',1);
+	$pdf->Cell(30,4,"$ ".$lafila["flete"] ,1,0,'C',1);
+	
+	$flete=$lafila["flete"];
+	$ivai=$lafila["iva"];
+	$impo=$importe*($ivai/100);	
+	$total=$importe+$impo+$flete; 
+
+	$impo= number_format($impo,2,",",".");	
+	$pdf->Cell(30,4,"$impo",1,0,'R',1);	*/
+	
+    $total=$lafila["total"];
+	$total2= number_format($total,0,",",".");
+	$pdf->Cell(35,4, " $  "."$total2",1,0,'R',1);
+	$pdf->Ln(4);
+
+
+      @mysql_free_result($resultado); 
+      @mysql_free_result($query);
+	  @mysql_free_result($resultado2); 
+	  @mysql_free_result($query3);
+	  
+	  // $i++;
+ //}
+
+$pdf->Output();
+?> 

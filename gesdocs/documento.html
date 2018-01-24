@@ -1,0 +1,586 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Gestion usuarios</title>
+    <script  src="../inc/prototype.js"></script>
+	<script  src="../inc/funciones.js"></script>
+    <script src="../js/jquery-1.5.2.min.js" type="text/javascript"></script>
+	
+    <script src="../js/i18n/grid.locale-es.js" type="text/javascript"></script>
+	<script src="../src/jqDnR.js" type="text/javascript"></script>
+	
+	<script src="../src/jqModal.js" type="text/javascript"></script>
+		<!--<script src="../themes/development-bundle/ui/jquery.ui.core.js"></script>
+	<script src="../themes/development-bundle/ui/jquery.ui.widget.js"></script>--> 
+	<script src="../themes/development-bundle/ui/jquery.ui.datepicker.js"></script> 
+	<script src="../themes/development-bundle/ui/jquery.ui.dialog.js"></script> 
+	
+	    <script type="text/javascript">
+  /*  $.jgrid.no_legacy_api = true;
+    $.jgrid.useJSON = true;*/
+     jQuery.noConflict();
+
+	jQuery(document).ready(function(){ 
+	
+	//EFECTO DE OCULTAR DIVS
+	jQuery("#trigger").click(function(event) {
+event.preventDefault();
+jQuery("#box").slideToggle();
+});
+ 
+jQuery("#box a").click(function(event) {
+event.preventDefault();
+//jQuery("#box").slideUp();
+});
+
+jQuery("#trigger").click(function(event) {
+event.preventDefault();
+jQuery("#tc").slideToggle();
+});
+ 
+jQuery("#tc a").click(function(event) {
+event.preventDefault();
+//jQuery("#box").slideUp();
+});
+
+	jQuery("#crud").jqGrid({ url:'gridocs.php',
+	 datatype: "json", 
+	  mtype: 'POST',
+	  colNames:['Codigo','Cedula','','','','','Documentos','','',]
+	  , colModel :[
+	 	  
+	  {
+		name:'id_conductor'
+		,index:'id_conductor'
+		,width:55
+		,align:'center'
+	},{
+		name:'codigo'
+		,index:'codigo'
+		,width:80
+		,editable:true
+		,editrules:{required:true}
+		,align:'center'
+		
+	//	formatter:'number',
+	//	formatoptions:{sorttype:"number"},
+//		editrules:required:true}
+		
+		
+	},{
+		name:'nombre1'
+		,index:'nombre1'
+		,width:70
+		//,align:'right'
+		,editable:true
+		//,edittype:'select'
+		//,editoptions:{value:"1:Si;0:No"}  Name:Value;Name:Value 
+	},{
+	name:'nombre2'
+		,index:'nombre2'
+		,width:70
+		//,align:'right'
+		,editable:true
+		//,edittype:'select'
+		//,editoptions:{value:"1:Si;0:No"}  Name:Value;Name:Value 
+	},{
+		name:'apellido1'
+		,index:'apellido1'
+		,width:70
+		//,align:'right'
+		,editable:true
+	},{
+	name:'apellido2'
+		,index:'apellido2'
+		,width:70
+		//,align:'right'
+		,editable:true
+//	},{
+//		name:'direccion'
+//		,index:'direccion'
+//		,width:130
+//		//,align:'right'
+//		,editable:true
+//	},{
+//		name:'telefono'
+//		,index:'telefono'
+//		,width:80
+//		,sortable:false
+//		,editable:true
+//		},{
+//		name:'fecha_nace'
+//		,index:'fecha_nace'
+//		,width:80
+//		,formatoptions:{srcformat:"Y-m-d H:i:s",newformat:"Y-m-d"}
+//		,formatter:"date"
+//		,editable:true
+//		,editoptions:{
+//		dataInit:
+//		function(elm){setTimeout(function(){
+//                  jQuery(elm).datepicker({dateFormat:'yy-mm-dd'});
+//                    jQuery('.ui-datepicker').css({'font-size':'75%'});
+//                },200);}
+//				}
+//		
+//		},{
+//		name:'est_civil'
+//		,index:'est_civil'
+//		,width:50
+//		
+//		,editable:true
+//		,edittype:"select",editoptions:{value:"soltero:Soltero;Casado:Casado;Union libre:Union libre;Separado:Separado"}
+//		},{
+//		name:'tipo_rh'
+//		,index:'tipo_rh'
+//		,width:30
+//		
+//		,editable:true
+//		,edittype:"select",editoptions:{value:"O-:O-;O+:O+;A-:A-;B-:B-;B+:B+;AB-:AB-;AB+:AB+"}
+//		},{
+//	name:'acudiente'
+//		,index:'acudiente'
+//		,width:100
+//		//,align:'right'
+//		,editable:true
+//	},{
+//		name:'telefonoa'
+//		,index:'telefonoa'
+//		,width:70
+//		//,align:'right'
+//		,editable:true
+//	},{
+//		name:'celulara'
+//		,index:'celulara'
+//		,width:70
+//		,sortable:false
+//		,editable:true
+	}
+	 ,{name:'act',index:'act',align:'center', width:90,sortable:false}
+	  ,{name:'tarj',index:'tarj',align:'center', width:90,sortable:false},
+	  {name:'ntarj',index:'ntarj',align:'center', width:90,sortable:false},
+	],
+	   
+	   pager: jQuery('#pcrud'),
+    rowNum:5,
+    rowList:[10,20,30],
+	height:200,
+	width:'auto',
+    sortname: 'id_conductor',
+    sortorder: "asc",
+    viewrecords: true,
+     caption: 'Gestion de Conductor',
+	 
+	 onSelectRow:
+	 	function(ids) {
+		 if(ids == null) { 
+		 ids=0; 
+		 if(jQuery('#crudoc').jqGrid('getGridParam','records') >0 ) {
+		 jQuery('#crudoc').jqGrid('setGridParam',{url:'subgrid.php?q=1&id='+ids,page:1});
+		 jQuery('#crudoc').jqGrid('setCaption','Detalle de documentos para el codigo: '+ids) .trigger('reloadGrid');
+		 ///////ppara subgrid de tarjetas
+		 
+		 jQuery('#crudtc').jqGrid('setGridParam',{url:'subgridtc.php?q=1&id='+ids,page:1});
+		 jQuery('#crudtc').jqGrid('setCaption','Detalle de tarjetas de control para el codigo: '+ids) .trigger('reloadGrid'); 
+		  }
+	}else { 
+	jQuery('#crudoc').jqGrid('setGridParam',{url:'subgrid.php?q=1&id='+ids,page:1});
+	jQuery('#crudoc').jqGrid('setCaption','Detalle de documentos para el codigo: '+ids) .trigger('reloadGrid');
+	//jQuery('#box').slideToggle(); para subgrid de tarjetas
+	jQuery('#crudtc').jqGrid('setGridParam',{url:'subgridtc.php?q=1&id='+ids,page:1});
+	jQuery('#crudtc').jqGrid('setCaption','Detalle de tarjetas de control para el codigo: '+ids) .trigger('reloadGrid');
+	 } 
+	 }
+			
+	 
+	 
+	 , postData: {
+		customVar1:'customVal1'
+		,customVar2:'customVal2'
+		
+		},
+		
+		//jQuery('#crud').editRow("+cl+"); 
+	///agregar botones de accion
+		loadComplete: function(){
+		var ids = jQuery("#crud").getDataIDs();
+		for(var i=0;i<ids.length;i++){
+			var cl = ids[i];
+			 var rowData = jQuery(this).getRowData(cl); 
+                  var id_cond= rowData['id_conductor'];//replace name with you 
+	be = "<input style='height:22px;width:50px;' type='button' value='VER' onclick=jQuery('#box').slideToggle(); />";
+	ta = "<input style='height:22px;width:60px;' type='button' value='VER T.C.' onclick=jQuery('#tc').slideToggle(); />";
+	nta = "<input style='height:22px;width:50px;' type='button' value='NUEVA' onclick=abretarjetan("+id_cond+");jQuery('#ntarjetao').dialog('open'); />";
+	
+	//jQuery('#list10_d').jqGrid('setGridParam',{url:'subgrid.php?q=1&id=2',page:1}); jQuery('#list10_d').jqGrid('setCaption','Invoice Detail: 2') .trigger('reloadGrid')+"/>"; 
+			
+			
+			//jQuery('#crud').editRow("+cl+"); />"; 
+			//se = "<a href='#' id='trigger'>TRIGGER</a>"; 
+			//ce = "<input style='height:22px;width:20px;' type='button' value='C' onclick=jQuery('#crud').restoreRow("+cl+"); />"; 
+			jQuery("#crud").setRowData(ids[i],{act:be})
+			jQuery("#crud").setRowData(ids[i],{tarj:ta})
+			jQuery("#crud").setRowData(ids[i],{ntarj:nta})
+		}	
+	},
+	    editurl: 'gridocs.php'// this is dummy existing url 
+		
+		 });
+		 
+		 var verdadero= true
+		 
+		 jQuery("#crud").jqGrid('navGrid','#pcrud',{edit:false,add:false,del:false,searchtext:'Busqueda'},{height:400,reloadAfterSubmit:true,closeAfterEdit : true});
+////		 
+		 
+		 //////configurar colspan de la cabezera
+		 
+		 jQuery("#crud").jqGrid('setGroupHeaders', { useColSpanStyle: true, groupHeaders:[ {startColumnName: 'nombre1', numberOfColumns: 2, titleText: '<em>Nombres</em>'}, {startColumnName: 'apellido1', numberOfColumns: 2, titleText: 'Apellidos'}, {startColumnName: 'tarj', numberOfColumns: 2, titleText: 'Tarjeta Ctrl'}	 ] });
+//	 
+		 function pickdates(id){
+	  jQuery('#pcrud').datepicker({dateFormat:'yy-mm-dd'});
+}
+////subgrid detalle de documentos
+
+jQuery("#crudoc").jqGrid({ 
+
+     url:'subgrid.php?q=1',
+	 datatype: "json", 
+	  mtype: 'GET',
+	  colNames:['Codigo','Documento','Fecha','Actualizar Docs','','',]
+	  , colModel :[
+	{name:'codigo'
+		,index:'codigo'
+		,width:100
+		//,align:'right'
+		,editable:false	
+	},{
+	name:'documento'
+		,index:'documento'
+		,width:330
+		//,align:'right'
+		,editable:false	
+	},{
+	
+		name:'fecha_vence'
+		,index:'fecha_vence'
+		,width:100
+		,editable:true
+		,editrules:{required:true}
+		,formatoptions:{srcformat:"Y-m-d H:i:s",newformat:"Y-m-d"}
+    	,formatter:"date"
+		,editoptions:{
+		dataInit:
+		function(elm){setTimeout(function(){
+                  jQuery(elm).datepicker({dateFormat:'yy-mm-dd',changeMonth: true,
+			changeYear: true,
+			showButtonPanel: true,
+			showWeek: true,});
+                    jQuery('.ui-datepicker').css({'font-size':'75%'});
+                },200);}
+				}
+		
+	
+	}
+	,{name:'actu',index:'actu',align:'center', width:120,sortable:false},
+	{
+	  name:'condu'
+		,index:'condu'
+		,width:55
+		,align:'center'
+		,hidden:true
+	},
+	{
+	  name:'doc'
+		,index:'doc'
+		,width:55
+		,align:'center'
+		,hidden:true
+	},
+	],
+	   
+	  // pager: jQuery('#pcrudoc'),
+    rowNum:5,
+    //rowList:[10,20,30],
+	height:'auto',
+	width:650,
+    sortname: 'codigo',
+    sortorder: "asc",
+    viewrecords: true,
+     caption: 'Documentos del conductor',
+	 
+	 postData: {
+		customVar1:'customVal1'
+		,customVar2:'customVal2'
+		
+		},
+		
+		//jQuery('#crud').editRow("+cl+"); 
+	loadComplete: function(){
+		var ids = jQuery("#crudoc").getDataIDs();
+  			
+			
+			//record=jQuery("#crudoc").jqGrid('getRowData',ids).codigo;
+		 // jQuery("#crudoc").jqGrid('getRowData',ids);	       
+		for(var i=0;i<ids.length;i++){
+		   //  var dato = record[i];
+			var cl = ids[i];
+			
+			 var rowData = jQuery(this).getRowData(cl); 
+                  var temp= rowData['condu'];//replace name with you 
+				  var doc= rowData['doc'];
+				 // alert(temp);	
+			
+	be = "<input  type='button' value='Actualiza' onclick=abre("+i+");jQuery('#actualiza').slideToggle();jQuery('#actualiza').dialog('open'); />";
+	
+			se = "<input  id='codigo"+i+"' type='hidden' value="+cl+" />"; 
+			co = "<input  id='condu"+i+"' type='hidden' value="+temp+" />"; 
+			docu = "<input  id='doc"+i+"' type='hidden' value="+doc+" />"; 
+			jQuery("#crudoc").setRowData(ids[i],{actu:be+se+co+docu})
+		}	
+	},
+	
+	    editurl: 'subgrid.php?q=1'// this is dummy existing url 
+		
+		 });
+		 
+////subgrid detalle de tarjetas de control
+
+jQuery("#crudtc").jqGrid({ 
+
+     url:'subgridtc.php?q=1',
+	 datatype: "json", 
+	  mtype: 'GET',
+	  colNames:['Codigo','Tarjeta','Conductor','Movil','Vigencia','Estado','','Operaciones',]
+	  , colModel :[
+	{name:'id_tarjeta'
+		,index:'id_tarjeta'
+		,width:55
+		//,align:'right'
+		,editable:false	
+	},{
+	name:'tarjeta'
+		,index:'tarjeta'
+		,width:60
+		//,align:'right'
+		,editable:false	
+	},{
+	
+		name:'codigo'
+		,index:'codigo'
+		,width:100
+		,editable:true
+		/*,editrules:{required:true}
+		,formatoptions:{srcformat:"Y-m-d H:i:s",newformat:"Y-m-d"}
+    	,formatter:"date"
+		,editoptions:{
+		dataInit:
+		function(elm){setTimeout(function(){
+                  jQuery(elm).datepicker({dateFormat:'yy-mm-dd',changeMonth: true,
+			changeYear: true,
+			showButtonPanel: true,
+			showWeek: true,});
+                    jQuery('.ui-datepicker').css({'font-size':'75%'});
+                },200);}
+				}
+		*/
+	
+	},{
+		name:'id_movil'
+		,index:'id_movil'
+		,align:'center'
+		, width:60
+	},{
+	  name:'fecha_vence'
+		,index:'fecha_vence'
+		,width:80
+		//,align:'center'
+		//,hidden:true
+	},{
+	  name:'estado'
+		,index:'estado'
+		,width:55
+		,align:'center'
+		//,hidden:true
+		
+	},{ name:'id_conductor'
+		,index:'id_conductor'
+		,width:55
+		,align:'center'
+		,hidden:true
+		},{name:'oper',index:'oper',align:'center', width:240,sortable:false
+	},
+	],
+	   
+	  // pager: jQuery('#pcrudoc'),
+	  pager: jQuery('#pcrudtc'),
+    rowNum:5,
+    //rowList:[10,20,30],
+	height:'auto',
+	width:650,
+    sortname: 'id_tarjeta',
+    sortorder: "desc",
+    viewrecords: true,
+     caption: 'Planillas de Control',
+	 
+	 postData: {
+		customVar1:'customVal1'
+		,customVar2:'customVal2'
+		
+		},
+		
+		//jQuery('#crud').editRow("+cl+"); 
+	loadComplete: function(){
+		var ids = jQuery("#crudtc").getDataIDs();
+  			
+			
+			//record=jQuery("#crudoc").jqGrid('getRowData',ids).codigo;
+		 // jQuery("#crudoc").jqGrid('getRowData',ids);	       
+		for(var i=0;i<ids.length;i++){
+		   //  var dato = record[i];
+			var cl = ids[i];
+			
+			 var rowData = jQuery(this).getRowData(cl);
+			  var idconductor= rowData['id_conductor']; 
+                  var id_tarj= rowData['id_tarjeta'];
+				  var ntarj= rowData['tarjeta'];
+				  var est= rowData['estado'];
+				  if (est==1){var estado="";
+				  }else{
+				estado="disabled=disabled";
+				  }
+				  
+				  //replace name with you 
+				 // var doc= rowData['doc'];
+				 // alert(doc);	
+			
+	be = "<input  type='button' value='Actualiza' "+estado+"  onclick=abre_actu_tarjeta("+i+");jQuery('#actualizatc').slideToggle();jQuery('#actualizatc').dialog('open'); />";
+	ver = "<input  type='button' value='Movimiento' onclick=abre_movi("+i+");jQuery('#veractualizatc').slideToggle();jQuery('#veractualizatc').dialog('open');j />";
+	cer = "<input  type='button' value='Cerrar' "+estado+" onclick=cerrar("+i+");jQuery('#cerrar').slideToggle();jQuery('#cerrar').dialog('open'); />";
+	         condoc = "<input  id='con_doc"+i+"' type='hidden' value="+idconductor+" />";
+			//se = "<input  id='codigo"+i+"' type='hidden' value="+cl+" />"; 
+			co = "<input  id='idtarj"+i+"' type='hidden' value="+id_tarj+" />"; 
+			ntarj = "<input  id='ntarj"+i+"' type='hidden' value="+ntarj+" />";
+			
+			//docu = "<input  id='doc"+i+"' type='hidden' value="+doc+" />"; +se+co+docu
+			jQuery("#crudtc").setRowData(ids[i],{oper:be+co+ver+cer+ntarj+condoc})
+			//jQuery("#crudtc").setRowData(ids[i],{doc:ntarj1})
+		}	
+	},
+	
+	    editurl: 'subgridtc.php?q=1'// this is dummy existing url 
+		
+		 });
+		  jQuery("#crudtc").jqGrid('navGrid','#pcrudtc',{edit:false,add:false,del:false,searchtext:'Busqueda'},{height:400,reloadAfterSubmit:true,closeAfterEdit : true},{},{},{sopt:['cn','bw','eq','ne','lt','gt','ew','le','ge']});
+/////////////////////funcion para el calendario		 
+		 
+	jQuery( "#date1" ).datepicker({
+			changeMonth: true,
+			changeYear: true,
+			showButtonPanel: true,
+			showWeek: true,
+		});	
+		
+////alertas modales 											
+jQuery('#actualiza').dialog({autoOpen: false, modal:true,width:600,height:200,}); 
+jQuery('#cerrar').dialog({autoOpen: false, modal:true,width:400,height:200,}); 
+jQuery('#actualizatc').dialog({autoOpen: false, modal:true,width:600,height:800,});
+jQuery('#veractualizatc').dialog({autoOpen: false, modal:true,width:800,height:800,});
+jQuery('#ntarjetao').dialog({autoOpen: false, modal:true,width:600,height:800,}); 
+
+ });
+    </script>
+
+    <script src="../js/jquery.jqGrid.min.js" type="text/javascript"></script>
+	
+    <script src="../themes/js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+	 <link rel="stylesheet" type="text/css" href="../themes/css/custom-theme/jquery-ui-1.8.16.custom.css">
+	<link rel="stylesheet" type="text/css" href="../css/ui.jqgrid.css">
+	
+   <!-- <link rel="stylesheet" type="text/css" media="screen" href="../themes/ui.multiselect.css" /> -->
+   	<!--<link rel="stylesheet" type="text/css" href="../themes/development-bundle/themes/custom-theme/jquery.ui.all.css"> -->
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="../themes/ui.multiselect.css" /> -->
+   <link rel="stylesheet" type="text/css" href="../plugins/ui.multiselect.css">
+
+    <style type="text/css">
+<!--
+.Estilo1 {
+	color: #333333;
+	font-size: 36px;
+	font-weight: bold;
+	font-style: italic;
+}
+-->
+    </style>
+	<style type="text/css">
+	#box {
+display: none;
+}
+#tc {
+display: none;
+}
+			/*demo page css*/
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.demoHeaders { margin-top: 2em; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			ul#icons {margin: 0; padding: 0;}
+			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#icons span.ui-icon {float: left; margin: 0 4px;}
+		#actualiza1 {
+	position:absolute;
+	width:200px;
+	height:115px;
+	z-index:1;
+	left: 666px;
+	top: 91px;
+}
+
+    </style>	
+</head>
+
+<body>
+<div id="Layer1"></div>
+
+
+<span class="Estilo1">Gesti&oacute;n de Documentos </span>
+<!--<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Usuario</a></li>
+				<li><a href="#tabs-2">Conductor</a></li>
+				<li><a href="#tabs-3">Asociado</a></li>
+			</ul>
+ -->			<div id="tabs-1"><table align="center" id="crud"  >
+<tr><td>&nbsp;</td></tr></table><div id="pcrud" align="center"></div>
+</div>
+			<!--<div id="tabs-2">Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.</div>
+			<div id="tabs-3">Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis. Pellentesque nisi urna, interdum eget, sagittis et, consequat vestibulum, lacus. Mauris porttitor ullamcorper augue.</div>
+		</div> -->
+		<br />
+	<!--<table id="list10_d"></table> <div id="pager10_d"></div> -->
+	
+	
+	<!--documentos -->
+	
+<div id="box">
+<table align="center" id="crudoc"  >
+<tr><td>&nbsp;</td></tr></table><div id="pcrudoc" align="center"></div>
+<div id="actualiza" title="Actualizacion de Documentos"></div>
+
+</div>
+
+<div id="tc">
+<table align="center" id="crudtc"  >
+<tr><td>&nbsp;</td></tr></table><div id="pcrudtc" align="center"></div>
+<div id="actualizatc" title="Actualizacion de Tarjeta de Control"></div>
+<div id="veractualizatc" title="Actualizacion de Tarjeta de Control"></div>
+<div id="cerrar" title="Cerrar Tarjeta de Control"></div>
+
+</div>
+</div>
+
+<div id="ntarjetao" title="Nueva Tarjeta de Control">
+
+</div>
+
+
+</body>
+</html>

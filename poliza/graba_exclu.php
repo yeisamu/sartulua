@@ -1,0 +1,68 @@
+<?php
+session_start();
+include('../inc/libreria.php'); //incluimos el config.php que contiene los datos de la conexión a la db
+include('../inc/operaciones.php');
+$link=conectarse();
+$login=$_SESSION['login'];
+$per=$_REQUEST['periodo'];
+$fini=$_REQUEST['fini'];
+$ffin=$_REQUEST['ffin'];
+$vpoliza=$_REQUEST['vpoliza'];
+$idmovi=$_REQUEST['idmovi'];
+$id_movilmod=$idmovi.date('m');
+$deshacer = FALSE;
+$concepto="EXCLUSION DEL MOVIL ".$idmovi." EN EL PERIODO".$per;
+mysql_query("BEGIN");
+$ahora=mysql_query("select date_format(now(),'%Y-%m-%d') as hoy");
+$fhoy=mysql_result($ahora,0,hoy);
+
+$selsaldo=mysql_query("SELECT saldo FROM sarmicro.`movi_contra` ORDER BY `movi_contra`.`id_mov` DESC
+LIMIT 0 , 1");
+$saldomov=mysql_result($selsaldo,0,saldo);
+
+$ejecutain=mysql_query("insert into `comp_egresos` (`concepto`, `fecha_com`, `valor_egreso`, `usuario`) values ('$concepto','$fhoy',$vpoliza,'$login')");
+
+$selegre=mysql_query("SELECT id_egreso FROM `comp_egresos` ORDER BY `comp_egresos`.`id_egreso` DESC
+LIMIT 0 , 1");
+$id_egre=mysql_result($selegre,0,id_egreso);
+$nrecibo='CE-'.$id_egre;
+$insertmov=mysql_query("insert into sarmicro.`movi_contra` (`fecha_mov`, n_recibo,`concepto`, `id_movil`, `egreso`,usuario) values ('$fhoy','$nrecibo','$concepto','$idmovi',$vpoliza,'$login')");
+
+$actusaldo=mysql_query("update sarmicro.movi_contra set saldo=$saldomov-$vpoliza where id_mov=last_insert_id()");
+
+$actucontra=mysql_query("update contractual set id_movil='$id_movilmod' where id_movil='$idmovi'");
+
+
+$actucontra=mysql_query("update detalle_contra set id_movil='$id_movilmod' where id_movil='$idmovi' and periodo='$per'");
+
+if (!$insertmov || !$actusaldo ) {
+	$deshacer = TRUE;
+}	
+		 
+	if($deshacer){
+	mysql_query("ROLLBACK");
+		echo $modal="
+<div class='ui-state-error' id='errorgraba' title='Error en consulta'>
+		<span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 50px 0;'></span>
+	   Error al grabar los datos </div><script language='javascript'>jQuery('#errorgraba').dialog({modal: true,buttons: {Ok: function() {
+					jQuery( this ).dialog('close');jQuery('#planillas').dialog( 'close' );	}}});</script>";
+
+	}else{
+	?>
+	
+<div class='ui-state-error' id='errorgraba' title='Grabar Exclusion'>
+		<span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 50px 0;'></span>
+	   Exclusion Registrada con exito al movil <?php echo $idmovi?></div><script language='javascript'>
+	  		//jQuery('#crudtc').jqGrid('setCaption','Detalle de tarjetas de control') .trigger('reloadGrid');
+	   //document.getElementById('grabaimp').disabled=true;
+	 jQuery("#tabs").load("relacionpagos.php?anio=<?php echo $per ?>");
+//	   jQuery('#crudplan').trigger('reloadGrid');jQuery('#crudplancon').trigger('reloadGrid');jQuery('#planillas').dialog( 'close' );jQuery('#autoriza_planilla').dialog( 'close' );
+jQuery('#exclu').dialog('close')
+jQuery( this ).dialog('close')
+	   jQuery('#errorgraba').dialog({modal: true,buttons: {Ok: function() {
+					jQuery( this ).dialog('close');}}});</script>
+	
+	<?php
+	}
+	mysql_query("COMMIT");	
+		?>	

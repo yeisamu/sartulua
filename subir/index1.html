@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Ejemplo de subida de ficheros</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/base/jquery-ui.css"
+        id="theme">
+    <link rel="stylesheet" href="js/jquery.fileupload-ui.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
+    <script src="js/jquery.fileupload.js"></script>
+    <script src="js/jquery.fileupload-ui.js"></script>
+    <style>
+        body
+        {
+            font-family: Verdana, Arial, sans-serif;
+            font-size: 13px;
+            margin: 0;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <table id="files" align="center">
+        <tr valign="baseline">
+            <td colspan="2">
+            </td>
+        </tr>
+    </table>
+    <form id="file_upload" action="upload.php" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" multiple>
+    <button>
+        Upload</button>
+    <div>
+        <img src="img/upload.png" alt="Subir imagen"><br>
+        Subir imagen</div>
+    </form>
+    <script>
+        /*global $ */
+        $(function () {
+            $('#file_upload').fileUploadUI({
+                uploadTable: $('#files'),
+                downloadTable: $('#files'),
+                buildUploadRow: function (files, index) {
+                    return $('<tr><td>' + files[index].name + '<\/td>' +
+                    '<td class="file_upload_progress"><div><\/div><\/td>' +
+                    '<td class="file_upload_cancel">' +
+                    '<button class="ui-state-default ui-corner-all" title="Cancel">' +
+                    '<span class="ui-icon ui-icon-cancel">Cancel<\/span>' +
+                    '<\/button><\/td><\/tr>');
+                },
+                buildDownloadRow: function (file) {
+                    return $('<tr><td nowrap align="right" class="texto" style="padding-top: 10px;"><b>Imagen:</b><\/td>' +
+                                            '<td>' + file.name + '</td>' +
+                                            '<\/tr></table>');
+                }
+            });
+        });
+</script>
+</body>
+</html>

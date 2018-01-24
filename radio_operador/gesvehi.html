@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Gestion usuarios</title>
+   
+    <script src="../js/jquery-1.5.2.min.js" type="text/javascript"></script>
+	
+    <script src="../js/i18n/grid.locale-es.js" type="text/javascript"></script>
+	<script src="../src/jqDnR.js" type="text/javascript"></script>
+		<script src="../themes/development-bundle/ui/jquery.ui.autocomplete.js" type="text/javascript"></script>
+	<script src="../src/jqModal.js" type="text/javascript"></script>
+	 <script type="text/javascript">
+	
+  /*  $.jgrid.no_legacy_api = true;
+    $.jgrid.useJSON = true;*/
+
+	jQuery(document).ready(function(){ 
+	jQuery("#crud").jqGrid({ url:'gridvehi.php',
+	 datatype: "json", 
+	  mtype: 'POST',
+	  colNames:['Movil','Placa','Clase','','Marca','Referencia','Tipo','Pago Hasta','Dias Mora','Grupo',]
+	  , colModel :[
+	 	  
+	  {
+	  name:'id_movil'
+		,index:'id_movil'
+		,width:60
+		,align:'center'
+		,editable:{number:false}
+		},{
+	  name:'placa'
+		,index:'placa'
+		,width:60
+		//,align:'center'
+		,editable:true
+		
+	},{
+	name:'clase'
+		,index:'clase'
+		,width:80
+		//,align:'right'
+		,editable:true	
+	},{
+	name:'id_marca'
+		,index:'id_marca'
+		,width:80
+		//,align:'right'
+		,editable:true	
+		,hidden:true
+	},{
+		name:'marca'
+		,index:'marca'
+		,width:80
+		,align:'center'
+		,editable:true
+	
+		},{
+	name:'referencia'
+		,index:'referencia'
+		,width:85
+		//,align:'right'
+		,editable:true	
+		},{
+	name:'tipo'
+		,index:'tipo'
+		,width:60
+		//,align:'right'
+		,editable:true	
+		
+	},{
+		name:'pago_hasta'
+		,index:'pago_hasta'
+		,width:80
+		,align:'center'
+		,editable:true
+	
+		},{
+			name:'dias_mora'
+		,index:'dias_mora'
+		,width:60
+		,align:'center'
+		,editable:true
+	  ,editrules:{number:true}
+		},{
+	name:'grupo'
+		,index:'grupo'
+		,width:70
+		//,align:'right'
+		,editable:true	
+	 // , edittype: 'file'
+/*	 ,formatter:function() {
+	 var ids = jQuery("#crud").getDataIDs();
+  			
+			
+			//record=jQuery("#crudoc").jqGrid('getRowData',ids).codigo;
+		 // jQuery("#crudoc").jqGrid('getRowData',ids);	       
+		for(var i=0;i<ids.length;i++){
+		   //  var dato = record[i];
+			var cl = ids[i];
+			
+			 var rowData = jQuery(this).getRowData(cl); 
+                  var temp= rowData['logo'];//replace name with you 
+				//  alert(temp)
+                             be="<img src='logo/"+temp+".GIF'/>";
+ 			 jQuery("#crud").setRowData(ids[i],{logo:be})
+}
+}	  
+*/	}
+	
+	 
+	],
+	   
+	   pager: jQuery('#pcrud'),
+    rowNum:10,
+    rowList:[10,20,30],
+	height:200,
+	width:'auto',
+    sortname: 'id_movil',
+    sortorder: "asc",
+    viewrecords: true,
+     caption: 'Gestion de movil',
+	 postData: {
+		customVar1:'customVal1'
+		,customVar2:'customVal2'
+		
+		},
+		
+		//jQuery('#crud').editRow("+cl+"); 
+	
+	
+	    editurl: 'gridvehi.php'// this is dummy existing url 
+		
+		 });
+		 
+		 jQuery("#crud").jqGrid('navGrid','#pcrud',{edit:false,add:false,del:false},{reloadAfterSubmit:true,closeAfterEdit : true,closeOnEscape:true},{closeOnEscape:true},{closeOnEscape:true},{sopt:['cn','bw','eq','ne','lt','gt','ew','le','ge'], odata : ['igual ', 'no igual a', 'menor que', 'menor o igual que','mayor que','mayor o igual a', 'empiece por','no empiece por','está en','no está en','termina por','no termina por','contiene','no contiene'],
+            groupOps: [ { op: "AND", text: "todo" },    { op: "OR",  text: "cualquier" }        ],
+});
+
+
+		 
+		 
+	
+		 
+		
+		 function pickdates(id){
+	  jQuery('#pcrud').datepicker({dateFormat:'yy-mm-dd'});
+}
+	/*	 jQuery( "#tabs" ).tabs({
+						//event: "mouseover"
+					});*/
+					
+					
+$("#bsdata").click(function(){
+	jQuery("#crud").searchGrid(
+		{sopt:['cn','bw','eq','ne','lt','gt','ew','le','ge'], odata : ['igual ', 'no igual a', 'menor que', 'menor o igual que','mayor que','mayor o igual a', 'empiece por','no empiece por','está en','no está en','termina por','no termina por','contiene','no contiene']
+}
+	);
+});					
+});					
+					
+
+	//	 });
+    </script>
+    <script src="../js/jquery.jqGrid.min.js" type="text/javascript"></script>
+	
+    <script src="../themes/js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+	 <link rel="stylesheet" type="text/css" href="../themes/css/custom-theme/jquery-ui-1.8.16.custom.css">
+	<link rel="stylesheet" type="text/css" href="../css/ui.jqgrid.css">
+	 <link rel="stylesheet" type="text/css" href="../plugins/ui.multiselect.css">
+    <style type="text/css">
+<!--
+.Estilo1 {
+	color: #333333;
+	font-size: 36px;
+	font-weight: bold;
+	font-style: italic;
+}
+-->
+    </style>
+	<style type="text/css">
+			/*demo page css*/
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.demoHeaders { margin-top: 2em; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			ul#icons {margin: 0; padding: 0;}
+			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#icons span.ui-icon {float: left; margin: 0 4px;}
+		</style>	
+</head>
+
+<body>
+
+
+<span class="Estilo1">Relaci&oacute;n de Pago de Diarios </span>
+		<table align="center" id="crud"  >
+<tr><td>&nbsp;</td></tr></table><div id="pcrud" align="center"></div>
+
+
+</body>
+</html>

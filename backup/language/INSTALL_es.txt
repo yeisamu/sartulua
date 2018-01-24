@@ -1,0 +1,11 @@
+INSTALLATION
+============
+Esta es la traducción en español para phpMyBackupPro v.2.1
+
+Copia los archivos en el directorio language de phpMyBackupPro.
+En el menú de configuración seleccina el lenguaje spanihs para cambiar a estet lenguaje.
+
+Por favor reporta errores encontrados a: http://sourceforge.net/projects/phpmybackup/ .
+En esta dirección también podrás encontrar noticias y actualizaciones de este programa.
+
+(c) 2007 Juan Jose Gonzalez (www.todo-mods.com)

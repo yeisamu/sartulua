@@ -1,0 +1,86 @@
+<script> 
+function validar(formulario)
+{ 
+  if(formulario.fecha1f.value == ''){ 
+    // informamos del error 
+    alert('Inserta fecha inicial'); 
+    // seleccionamos el campo incorrecto 
+    formulario.fecha1f.focus(); 
+    return false; 
+  } 
+// primera comprobación 
+  if(formulario.fecha2f.value == ''){ 
+    // informamos del error 
+    alert('Inserta fecha final'); 
+    // seleccionamos el campo incorrecto 
+    formulario.fecha2f.focus(); 
+    return false; 
+    
+  } 
+
+ return true; 
+} 
+</script> 
+<script type="text/javascript" src="../.../billar/menu/validarFecha.bin"></script>
+<html>
+
+<head>
+<title>reporte</title>
+<link href="../estilo.css" rel="stylesheet" type="text/css">
+</head>
+
+<body >
+<div ALIGN="justify">
+<FIELDSET>
+
+  <p><b>Reporte</p>
+<table width="96%" border="0" align="center">
+  <tr>
+    <td width="80%"><p align="center">Reporte De Ventas Por Factura</p>
+    <p align="center"></td>
+  </tr>
+  <tr>
+  
+    <td width="100%"><form  action="imprimir_factura.php" target="_blank" method="post" onSubmit="return validar(this)" >
+    
+      <table width="96%" border="0" align="center" >
+     <!-- <tr>
+    <td colspan="3">
+    <INPUT NAME="tipo" TYPE= "RADIO" VALUE="0"> 
+    Por Fecha
+			 <INPUT NAME="tipo" TYPE= "RADIO" VALUE="1"> 
+			 Por Factura
+   </td>
+  </tr> -->
+         <td >Fecha Inicial</td>
+          <td width="178" >
+		  <!--<input name="fecha1f" type="text" size="15"> -->
+		   <input alt="Fecha inicial" id="fecha1" name="fecha1" value="" size="10" maxlength="10" onFocus="javascript:vDateType=3" onKeyUp="DateFormat(this,this.value,event,false,3)" onBlur="DateFormat(this,this.value,event,true,3);" type="text"> aa/mm/dd
+		  </td>
+          <td width="55" >Fecha Final</td>
+          <td width="170" >
+		 <!-- <input name="fecha2f" type="text" size="15"> -->
+		  <input alt="Fecha final" id="fecha2" name="fecha2" value="" size="10" maxlength="10" onFocus="javascript:vDateType=3" onKeyUp="DateFormat(this,this.value,event,false,3)" onBlur="DateFormat(this,this.value,event,true,3);" type="text"> aa/mm/dd
+		  </td>
+        </tr>
+        	
+     <!-- <tr>
+          <td width="65">Num de Factura</td>
+          <td > <input name= " fv" type="text" size="5"></td>
+        </tr>-->
+        <tr>
+          <td width="65"><input type="submit"  value="Enviar"></td>
+          <td ><input type="reset" name="Submit2" value="Limpiar"></td>
+          
+        </tr> 
+      </table>
+      </FIELDSET>
+    </form>
+    </td>
+  </tr>
+</table>
+
+
+</div>
+</body>
+</html>
