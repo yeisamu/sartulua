@@ -1,12 +1,12 @@
 <?php
 function conectarse()
 {
-   if (!($link=mysql_connect("villadecespedestulua.com","villadec_sar","td72da")))
+   if (!($link=mysql_connect("localhost","root","")))
    {
       echo "Error conectando al servidor .";
       exit();
    }
-   if (!mysql_select_db("villadec_sar",$link))
+   if (!mysql_select_db("sar",$link))
    {
       echo "Error seleccionando la base de datos.";
       exit();
@@ -27,13 +27,13 @@ function valida_usr($id_opcion){
     }
     return 1;
 }
-$dbConfig['dbServer'] = 'villadecespedestulua.com';    /* Server */
-$dbConfig['dbUser'] = 'villadec_sar';         /* Username */
-$dbConfig['dbPassword'] = 'td72da';         /* Password */
-$dbConfig['dbDatabase'] = 'villadec_sar';   
+$dbConfig['dbServer'] = 'localhost';    /* Server */
+$dbConfig['dbUser'] = 'root';         /* Username */
+$dbConfig['dbPassword'] = '';         /* Password */
+$dbConfig['dbDatabase'] = 'sar';   
 $dbhost='villadecespedestulua.com'; 
-$dbuser= 'villadec_sar'; 
-$dbpassword= 'td72da'; 
-$database= 'villadec_sar';
+$dbuser= 'root'; 
+$dbpassword= ''; 
+$database= 'sar';
  // $link=conectarse();
 ?>
